@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { ITodoItem } from "../App";
+import { ITodoList } from "../reducer";
 
 interface IProps {
-  data: ITodoItem[];
-  onToggleAll: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  data: ITodoList[];
+  onToggleAll: (flag: boolean) => void;
   onDeleteCompleted: () => void;
 }
 
@@ -20,7 +20,7 @@ function Controls({ data, onToggleAll, onDeleteCompleted }: IProps) {
         <input
           type="checkbox"
           checked={isAllCompleted}
-          onChange={onToggleAll}
+          onChange={(e) => onToggleAll(e.target.checked)}
         />
         전체 선택
       </label>

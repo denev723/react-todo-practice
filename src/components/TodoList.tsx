@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { ITodoItem } from "../App";
 import TodoItem from "./TodoItem";
+import { ITodoList } from "../reducer";
 
 interface IProps {
-  data: ITodoItem[];
+  data: ITodoList[];
   onToggle: (id: number) => void;
   onEditChange: (id: number, text: string) => void;
   onDelete: (id: number) => void;

@@ -1,15 +1,25 @@
-import { useRef, useState } from "react";
+import { useReducer } from "react";
 import styled from "styled-components";
 import Controls from "./components/Controls";
 import TodoForm from "./components/TodoForm";
 import TodoList from "./components/TodoList";
 import Sidebar from "./components/Sidebar";
+import { initialState, reducer } from "./reducer";
 
-const Wrap = styled.div``;
+const Wrap = styled.div`
+  display: flex;
+`;
 
-const Container = styled.div``;
+const SidebarWrap = styled.div`
+  width: 320px;
+`;
 
-const TodoWrap = styled.div``;
+const TodoWrap = styled.div`
+  width: calc(100% - 320px);
+  padding: 20px;
+`;
+
+const TodoListWrap = styled.div``;
 
 export interface ITodoItem {
   id: number;
@@ -18,15 +28,12 @@ export interface ITodoItem {
 }
 
 function App() {
-  const defaultId = useRef(0);
-  const [list, setList] = useState<ITodoItem[]>([]);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  const [filterType, setFilterType] = useState("ALL");
-
-  const filterTypeList = list.filter((item) => {
-    if (filterType === "ALL") {
+  const filterTypeList = state.list.filter((item) => {
+    if (state.filterType === "ALL") {
       return item;
-    } else if (filterType === "TO_DO") {
+    } else if (state.filterType === "TO_DO") {
       return !item.completed;
     } else {
       return item.completed;
@@ -34,66 +41,41 @@ function App() {
   });
 
   const handleSubmit = (text: string) => {
-    setList((prevList) =>
-      prevList.concat({
-        id: (defaultId.current += 1),
-        text,
-        completed: false,
-      })
-    );
+    dispatch({ type: "ADD_TODO", payload: text });
   };
 
   const handleToggle = (id: number) => {
-    setList((prevList) =>
-      prevList.map((item) => {
-        if (item.id === id) {
-          return { ...item, completed: !item.completed };
-        }
-        return item;
-      })
-    );
+    dispatch({ type: "TOGGLE_TODO", payload: id });
   };
 
-  const handleToggleAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setList((prevList) =>
-      prevList.map((item) => {
-        return { ...item, completed: e.target.checked };
-      })
-    );
+  const handleToggleAll = (flag: boolean) => {
+    dispatch({ type: "TOGGLE_TODO_ALL", payload: flag });
   };
 
   const handleDelete = (id: number) => {
-    setList((prevList) => prevList.filter((item) => item.id !== id));
+    dispatch({ type: "DELETE_TODO", payload: id });
   };
 
   const handleDeleteCompleted = () => {
-    setList((prevList) => prevList.filter((item) => !item.completed));
+    dispatch({ type: "DELETE_TODO_ALL" });
   };
 
   const handleEditChange = (id: number, text: string) => {
-    setList((prevList) =>
-      prevList.map((item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            text,
-          };
-        }
-        return item;
-      })
-    );
+    dispatch({ type: "UPDATE_TODO", payload: { id, text } });
   };
 
   function handleFilterClick(type: string) {
-    setFilterType(type);
+    dispatch({ type: "SET_FILTER", payload: type });
   }
 
   return (
     <Wrap>
-      <Sidebar onFilterClick={handleFilterClick} />
-      <Container>
+      <SidebarWrap>
+        <Sidebar onFilterClick={handleFilterClick} />
+      </SidebarWrap>
+      <TodoWrap>
         <TodoForm onSubmit={handleSubmit} />
-        <TodoWrap>
+        <TodoListWrap>
           <Controls
             data={filterTypeList}
             onToggleAll={handleToggleAll}
@@ -105,8 +87,8 @@ function App() {
             onEditChange={handleEditChange}
             onDelete={handleDelete}
           />
-        </TodoWrap>
-      </Container>
+        </TodoListWrap>
+      </TodoWrap>
     </Wrap>
   );
 }

@@ -4,19 +4,30 @@ type TProps = {
   onFilterClick: (type: string) => void;
 };
 
-const Container = styled.div``;
+const Title = styled.h1`
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+`;
 
-const FilterBtnWrap = styled.div``;
+const FilterBtnWrap = styled.div`
+  margin-top: 100px;
+`;
 
-const FilterBtn = styled.button``;
+const FilterBtn = styled.button`
+  width: 100%;
+  display: block;
+`;
 
 function Sidebar({ onFilterClick }: TProps) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     onFilterClick(e.currentTarget.value);
   };
   return (
-    <Container>
-      <h1>To Do List</h1>
+    <>
+      <Title>To Do List</Title>
       <FilterBtnWrap>
         <FilterBtn onClick={handleClick} value="ALL">
           모두
@@ -28,7 +39,7 @@ function Sidebar({ onFilterClick }: TProps) {
           완료됨
         </FilterBtn>
       </FilterBtnWrap>
-    </Container>
+    </>
   );
 }
 

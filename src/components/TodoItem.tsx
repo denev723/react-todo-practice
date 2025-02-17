@@ -11,9 +11,16 @@ interface IProps {
   onDelete: (id: number) => void;
 }
 
+interface IPara {
+  isCompleted: boolean;
+}
+
 const TodoItemContainer = styled.li``;
 const TodoContent = styled.div``;
 const TodoBtnWrap = styled.div``;
+const Title = styled.p<IPara>`
+  text-decoration: ${(props) => (props.isCompleted ? "line-through" : "none")};
+`;
 
 function TodoItem({
   id,
@@ -49,7 +56,7 @@ function TodoItem({
               checked={completed}
               onChange={() => onToggle(id)}
             />
-            <p>{newText}</p>
+            <Title isCompleted={completed}>{newText}</Title>
           </>
         )}
       </TodoContent>
