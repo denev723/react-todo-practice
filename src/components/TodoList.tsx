@@ -17,6 +17,7 @@ function TodoList({ data, onToggle, onEditChange, onDelete }: IProps) {
       {data.map((item) => {
         return (
           <TodoItem
+            key={item.id}
             id={item.id}
             text={item.text}
             completed={item.completed}
